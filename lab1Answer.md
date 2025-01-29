@@ -38,6 +38,36 @@ Tightly Related Functionalities – All methods work together for a single purpo
 
 
 Part 3: Implementation Challenge
+Create a UML component diagram for the Email Transport system.
+   1. A UML component diagram for the Email Transport system might include:
+   2. Components: Transport, Message, Transportable, SMTP Server.
+   3. Interfaces: Transportable (implemented by Transport).
+   4. Relationships: Transport component depends on the Transportable interface and communicates with the SMTP Server component.
+
+Implement an alternative transport mechanism (e.g., REST-based email sending) using the Transportable interface.
+
+public class RestTransport implements Transportable {
+    private String restEndpoint;
+
+    public RestTransport(String restEndpoint) {
+        this.restEndpoint = restEndpoint;
+    }
+
+    @Override
+    public void send(Message msg) throws TransportException {
+        // Implementation for sending message via REST
+        try {
+            // REST client code to send message
+        } catch (Exception e) {
+            throw new TransportException("Failed to send message via REST", e);
+        }
+    }
+}
+
+
+Discuss how the component design facilitates potential reuse in different systems.
+
+The component design facilitates reuse by decoupling the transport mechanism from the rest of the system. By adhering to the Transportable interface, different transport mechanisms (e.g., SMTP, REST) can be easily swapped in or out without modifying the core system. This makes the system more flexible and adaptable to different environments or requirements. Additionally, the modular nature of the components allows them to be reused in different systems that require similar functionality, reducing development time and effort.
 
 
 
