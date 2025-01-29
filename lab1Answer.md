@@ -4,7 +4,7 @@
 - **Member 3**: [GitHub Profile](https://github.com/ninoa2000)
 
 
-commit
+
 A software component is a modular, reusable, and self-contained unit of software that encapsulates specific functionality and interacts with other components through well-defined interfaces.
 
 ## Key characteristics:
