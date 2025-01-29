@@ -4,6 +4,7 @@
 - **Member 3**: [GitHub Profile](https://github.com/ninoa2000)
 
 
+Part 1: Component and Interface Concepts
 
 A software component is a modular, reusable, and self-contained unit of software that encapsulates specific functionality and interacts with other components through well-defined interfaces.
 
@@ -21,7 +22,7 @@ an interface is a defined set of methods, functions, or properties that specify 
 
 Transportable interface supports modular design by allowing different objects to be transported without knowing their internal details. It promotes reusability, flexibility, and easy integration, making the system more scalable and maintainable.
 
-
+Part 2: Code Analysis
 
 
 ## Modular Properties
@@ -36,6 +37,7 @@ Well-Defined Methods – Helper methods like sendMessage and smtpErrorExists bre
 Tightly Related Functionalities – All methods work together for a single purpose: sending messages via SMTP.
 
 
+Part 3: Implementation Challenge
 
 
 
