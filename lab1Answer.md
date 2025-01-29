@@ -1,3 +1,10 @@
+- **Member 1**: [GitHub Profile](https://github.com/adam9hub)
+- **Member 1**: [GitHub Profile](https://github.com/Yulian1705)
+- **Member 2**: [GitHub Profile](https://github.com/en-ea)
+- **Member 3**: [GitHub Profile](https://github.com/ninoa2000)
+
+
+
 A software component is a modular, reusable, and self-contained unit of software that encapsulates specific functionality and interacts with other components through well-defined interfaces.
 
 ## Key characteristics:
@@ -8,7 +15,7 @@ Interoperability
 Replaceability
 Composability
 Independence
-Standardization
+Standardisation
 
 an interface is a defined set of methods, functions, or properties that specify how different software components or systems interact with each other
 
