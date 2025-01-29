@@ -1,6 +1,6 @@
-## A software component is a modular, reusable, and self-contained unit of software that encapsulates specific functionality and interacts with other components through well-defined interfaces.
+A software component is a modular, reusable, and self-contained unit of software that encapsulates specific functionality and interacts with other components through well-defined interfaces.
 
-Key characteristics:
+## Key characteristics:
 Modularity
 Reusability
 Encapsulation
