@@ -1,7 +1,7 @@
-- **Member 1**: [GitHub Profile](https://github.com/Adam9hub)
-- **Member 1**: [GitHub Profile](https://github.com/Yulian1705)
-- **Member 2**: [GitHub Profile](https://github.com/en-ea)
-- **Member 3**: [GitHub Profile](https://github.com/ninoa2000)
+- **Member 1 (Adam) **: [GitHub Profile](https://github.com/Adam9hub)
+- **Member 2 (Yulian) **: [GitHub Profile](https://github.com/Yulian1705)
+- **Member 3 (Enea) **: [GitHub Profile](https://github.com/en-ea)
+- **Member 4 (Niwhar) **: [GitHub Profile](https://github.com/ninoa2000)
 
 
 Part 1: Component and Interface Concepts
