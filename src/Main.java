@@ -1,21 +1,13 @@
 public class Main {
     public static void main(String[] args) {
-        // Initialize components
-        Data data = new Data();
-        Stock stock = new Stock(data);
-        User user = new User();
-        UserFinance userFinance = new UserFinance(data);
-        UserOwnedStocks userOwnedStocks = new UserOwnedStocks();
+        // Sample data setup
+        StockCompany company = new StockCompany("Tesla", "TSLA");
+        Share share = new Share(company, 100, 500.0);
+        User user = new User("John Doe", "john.doe@example.com");
+        Portfolio portfolio = new Portfolio(user);
+        portfolio.addShare(share);
 
-        // Simulate actions
-        user.manageFinance(userFinance);
-        user.ownStock(userOwnedStocks);
-        userOwnedStocks.trackStock(stock);
-
-        // Using abstraction to store data
-        stock.storeData(); 
-        userFinance.storeData();
-
-        System.out.println("Bitcoin API System Initialized Successfully!");
+        // Display portfolio total value
+        System.out.println("Total Portfolio Value: " + portfolio.getTotalValue());
     }
 }

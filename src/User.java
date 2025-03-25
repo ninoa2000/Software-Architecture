@@ -1,22 +1,17 @@
 public class User {
-    private UserFinance userFinance;
-    private UserOwnedStocks userOwnedStocks;
+    private String userName;
+    private String email;
 
-    public void manageFinance(UserFinance userFinance) {
-        this.userFinance = userFinance;
-        System.out.println("User is managing finances.");
+    public User(String userName, String email) {
+        this.userName = userName;
+        this.email = email;
     }
 
-    public void ownStock(UserOwnedStocks userOwnedStocks) {
-        this.userOwnedStocks = userOwnedStocks;
-        System.out.println("User owns stocks.");
+    public String getUserName() {
+        return userName;
     }
 
-    public UserFinance getUserFinance() {
-        return userFinance;
-    }
-
-    public UserOwnedStocks getUserOwnedStocks() {
-        return userOwnedStocks;
+    public String getEmail() {
+        return email;
     }
 }
