@@ -1,17 +1,13 @@
-public class User {
-    private String userName;
+public class User implements UserInfo {
+    private String name;
     private String email;
 
-    public User(String userName, String email) {
-        this.userName = userName;
+    public User(String name, String email) {
+        this.name = name;
         this.email = email;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getEmail() {
-        return email;
+    public String getUserInfo() {
+        return "User: " + name + ", Email: " + email;
     }
 }

@@ -3,30 +3,21 @@ import java.util.List;
 
 public class Portfolio {
     private User user;
-    private List<Share> shares;
+    private List<Transaction> transactions;
 
     public Portfolio(User user) {
         this.user = user;
-        this.shares = new ArrayList<>();
+        this.transactions = new ArrayList<>();  // Initialize the transactions list
     }
 
-    public void addShare(Share share) {
-        shares.add(share);
+    public void addTransaction(Transaction transaction) {
+        transactions.add(transaction);  // Adds transaction to the list
     }
 
-    public double getTotalValue() {
-        double totalValue = 0;
-        for (Share share : shares) {
-            totalValue += share.calculateTotalValue();
+    public void displayPortfolio() {
+        System.out.println("Portfolio of " + user.getUserInfo());
+        for (Transaction transaction : transactions) {
+            System.out.println(transaction.getTransactionDetails());
         }
-        return totalValue;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public List<Share> getShares() {
-        return shares;
     }
 }

@@ -1,17 +1,13 @@
-public class StockCompany {
-    private String companyName;
-    private String tickerSymbol;
+public class StockCompany implements StockInfo {
+    private String name;
+    private String symbol;
 
-    public StockCompany(String companyName, String tickerSymbol) {
-        this.companyName = companyName;
-        this.tickerSymbol = tickerSymbol;
+    public StockCompany(String name, String symbol) {
+        this.name = name;
+        this.symbol = symbol;
     }
 
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public String getTickerSymbol() {
-        return tickerSymbol;
+    public String getStockDetails() {
+        return "Stock Company: " + name + ", Symbol: " + symbol;
     }
 }
