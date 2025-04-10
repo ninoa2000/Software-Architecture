@@ -1,0 +1,110 @@
+@startuml StockCompare Component Diagram
+
+!theme plain
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+skinparam linetype ortho
+skinparam DefaultFontSize 14
+skinparam DefaultFontName Arial
+
+title "StockCompare Service-Oriented Architecture - Component Diagram"
+
+package "Presentation Layer" {
+    [Web UI] as webui
+    [RESTful API] as api
+}
+
+package "Controller Layer" {
+    [StockController] as stockcontroller
+    [WebController] as webcontroller 
+    [UserController] as usercontroller
+}
+
+package "Services Layer" #EAEAFF {
+    package "Stock Services" {
+        interface "StockServiceInterface" as stockserviceinterface
+        [StockService] as stockservice
+        stockservice -(0- stockserviceinterface
+
+        interface "ExternalStockDataServiceInterface" as externalstockdatainterface
+        [AlphaVantageService] as alphaservice
+        alphaservice -(0- externalstockdatainterface
+    }
+
+    package "Comparison Services" {
+        interface "ComparisonServiceInterface" as comparisoninterface
+        [ComparisonService] as comparisonservice
+        comparisonservice -(0- comparisoninterface
+    }
+
+    package "User Services" {
+        interface "UserServiceInterface" as userinterface
+        [UserService] as userservice
+        userservice -(0- userinterface
+    }
+}
+
+package "Repository Layer" {
+    interface "StockRepository" as stockrepo
+    interface "StockPriceRepository" as pricerepo
+    interface "UserProfileRepository" as userrepo
+}
+
+package "Model Layer" {
+    [Stock] as stockmodel
+    [StockPrice] as pricemodel
+    [UserProfile] as usermodel
+}
+
+package "External Services" {
+    [AlphaVantage API] as alphaapi
+}
+
+package "Data Storage" {
+    database "H2 Database" as db
+}
+
+' Presentation Layer to Controller connections
+webui --> webcontroller
+api --> stockcontroller
+api --> usercontroller
+
+' Controller Layer to Service Layer connections
+stockcontroller --> stockserviceinterface
+stockcontroller --> comparisoninterface
+webcontroller --> stockserviceinterface
+usercontroller --> userinterface
+
+' Service Layer to Repository Layer connections
+stockservice --> stockrepo
+stockservice --> pricerepo
+stockservice --> externalstockdatainterface
+userservice --> userrepo
+comparisonservice --> stockserviceinterface
+
+' Repository to Model connections
+stockrepo .. stockmodel
+pricerepo .. pricemodel
+userrepo .. usermodel
+
+' Repository to Database connections
+stockrepo --> db
+pricerepo --> db
+userrepo --> db
+
+' External service connections
+alphaservice --> alphaapi
+
+' Legend
+legend right
+  <b>StockCompare Service-Oriented Architecture</b>
+  --
+  This diagram shows the component structure of the
+  StockCompare application following SOA principles. 
+  Each service provides a specific business function
+  through well-defined interfaces.
+endlegend
+
+footer "StockCompare Application - SOA Design"
+
+@enduml 

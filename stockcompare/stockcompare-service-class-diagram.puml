@@ -1,0 +1,176 @@
+@startuml StockCompare Service Class Diagram
+
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam backgroundColor white
+skinparam linetype ortho
+skinparam DefaultFontSize 12
+skinparam DefaultFontName Arial
+
+title "StockCompare Service-Oriented Architecture - Service Layer Class Diagram"
+
+' Stock Service
+interface StockServiceInterface {
+  + getAllStocks(): List<Stock>
+  + findStock(symbol: String): Optional<Stock>
+  + getOrCreateStock(symbol: String): Stock
+  + getStockPrices(symbol: String, startDate: LocalDate, endDate: LocalDate): List<StockPrice>
+}
+
+class StockService {
+  - stockRepository: StockRepository
+  - stockPriceRepository: StockPriceRepository
+  - externalStockDataService: ExternalStockDataServiceInterface
+  + getAllStocks(): List<Stock>
+  + findStock(symbol: String): Optional<Stock>
+  + getOrCreateStock(symbol: String): Stock
+  + getStockPrices(symbol: String, startDate: LocalDate, endDate: LocalDate): List<StockPrice>
+}
+
+' External Data Service
+interface ExternalStockDataServiceInterface {
+  + getStock(symbol: String): Stock
+  + getHistoricalPrices(stock: Stock, startDate: LocalDate, endDate: LocalDate): List<StockPrice>
+}
+
+class AlphaVantageService {
+  - restTemplate: RestTemplate
+  - objectMapper: ObjectMapper
+  - apiKey: String
+  - baseUrl: String
+  + getStock(symbol: String): Stock
+  + getHistoricalPrices(stock: Stock, startDate: LocalDate, endDate: LocalDate): List<StockPrice>
+}
+
+' Comparison Service
+interface ComparisonServiceInterface {
+  + compareStocks(symbol1: String, symbol2: String, from: LocalDate, to: LocalDate): Map<String, List<StockPrice>>
+  + calculatePerformance(symbol: String, from: LocalDate, to: LocalDate): Map<String, Double>
+  + comparePerformance(symbols: List<String>, from: LocalDate, to: LocalDate): Map<String, Map<String, Double>>
+}
+
+class ComparisonService {
+  - stockService: StockServiceInterface
+  + compareStocks(symbol1: String, symbol2: String, from: LocalDate, to: LocalDate): Map<String, List<StockPrice>>
+  + calculatePerformance(symbol: String, from: LocalDate, to: LocalDate): Map<String, Double>
+  + comparePerformance(symbols: List<String>, from: LocalDate, to: LocalDate): Map<String, Map<String, Double>>
+}
+
+' User Service
+interface UserServiceInterface {
+  + createUser(username: String, email: String, fullName: String): UserProfile
+  + getUserByUsername(username: String): Optional<UserProfile>
+  + getUserByEmail(email: String): Optional<UserProfile>
+  + getUserById(id: Long): Optional<UserProfile>
+  + getAllUsers(): List<UserProfile>
+  + updateUser(userId: Long, email: String, fullName: String, defaultDateRangeDays: Integer): UserProfile
+  + deleteUser(userId: Long): boolean
+  + addFavoriteStock(userId: Long, stockSymbol: String): UserProfile
+  + removeFavoriteStock(userId: Long, stockSymbol: String): UserProfile
+  + getFavoriteStocks(userId: Long): Set<String>
+}
+
+class UserService {
+  - userProfileRepository: UserProfileRepository
+  + createUser(username: String, email: String, fullName: String): UserProfile
+  + getUserByUsername(username: String): Optional<UserProfile>
+  + getUserByEmail(email: String): Optional<UserProfile>
+  + getUserById(id: Long): Optional<UserProfile>
+  + getAllUsers(): List<UserProfile>
+  + updateUser(userId: Long, email: String, fullName: String, defaultDateRangeDays: Integer): UserProfile
+  + deleteUser(userId: Long): boolean
+  + addFavoriteStock(userId: Long, stockSymbol: String): UserProfile
+  + removeFavoriteStock(userId: Long, stockSymbol: String): UserProfile
+  + getFavoriteStocks(userId: Long): Set<String>
+}
+
+' Repositories
+interface StockRepository {
+  + findBySymbol(symbol: String): Optional<Stock>
+  + findAll(): List<Stock>
+  + save(stock: Stock): Stock
+  + existsById(id: Long): boolean
+  + deleteById(id: Long): void
+}
+
+interface StockPriceRepository {
+  + findByStockAndDateBetweenOrderByDate(stock: Stock, startDate: LocalDate, endDate: LocalDate): List<StockPrice>
+  + existsByStockAndDate(stock: Stock, date: LocalDate): boolean
+  + save(stockPrice: StockPrice): StockPrice
+}
+
+interface UserProfileRepository {
+  + findByUsername(username: String): Optional<UserProfile>
+  + findByEmail(email: String): Optional<UserProfile>
+  + findById(id: Long): Optional<UserProfile>
+  + findAll(): List<UserProfile>
+  + existsByUsername(username: String): boolean
+  + existsByEmail(email: String): boolean
+  + existsById(id: Long): boolean
+  + save(userProfile: UserProfile): UserProfile
+  + deleteById(id: Long): void
+}
+
+' Model classes
+class Stock {
+  - id: Long
+  - symbol: String
+  - name: String
+  - exchange: String
+}
+
+class StockPrice {
+  - id: Long
+  - stock: Stock
+  - date: LocalDate
+  - open: double
+  - high: double
+  - low: double
+  - close: double
+  - volume: long
+}
+
+class UserProfile {
+  - id: Long
+  - username: String
+  - email: String
+  - fullName: String
+  - favoriteStocks: Set<String>
+  - createdAt: LocalDateTime
+  - lastLogin: LocalDateTime
+  - defaultDateRangeDays: Integer
+  + addFavoriteStock(stockSymbol: String): void
+  + removeFavoriteStock(stockSymbol: String): void
+}
+
+' Implementation relationships
+StockServiceInterface <|.. StockService
+ExternalStockDataServiceInterface <|.. AlphaVantageService
+ComparisonServiceInterface <|.. ComparisonService
+UserServiceInterface <|.. UserService
+
+' Service dependencies
+StockService --> StockRepository
+StockService --> StockPriceRepository
+StockService --> ExternalStockDataServiceInterface
+ComparisonService --> StockServiceInterface
+UserService --> UserProfileRepository
+
+' Repository dependencies
+StockRepository ..> Stock
+StockPriceRepository ..> StockPrice
+UserProfileRepository ..> UserProfile
+StockPrice --> Stock
+
+' Add legend
+legend right
+  <b>StockCompare Service Layer Class Diagram</b>
+  --
+  This diagram shows the service interfaces 
+  and their implementations, following SOA principles.
+  Interfaces define clear contracts between components.
+endlegend
+
+footer "StockCompare Application - Service Layer"
+
+@enduml 

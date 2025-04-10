@@ -1,0 +1,172 @@
+@startuml StockCompare Detailed Component Diagram
+
+!theme plain
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+skinparam linetype polyline
+skinparam DefaultFontSize 12
+skinparam DefaultFontName Arial
+
+title "StockCompare Service-Oriented Architecture - Detailed Component Diagram"
+
+' Interfaces
+interface "StockServiceInterface" as stockserviceinterface {
+  + getAllStocks(): List<Stock>
+  + findStock(symbol: String): Optional<Stock>
+  + getOrCreateStock(symbol: String): Stock
+  + getStockPrices(symbol: String, startDate: LocalDate, endDate: LocalDate): List<StockPrice>
+}
+
+interface "ExternalStockDataServiceInterface" as externalstockdatainterface {
+  + getStock(symbol: String): Stock
+  + getHistoricalPrices(stock: Stock, startDate: LocalDate, endDate: LocalDate): List<StockPrice>
+}
+
+interface "ComparisonServiceInterface" as comparisoninterface {
+  + compareStocks(symbol1: String, symbol2: String, from: LocalDate, to: LocalDate): Map<String, List<StockPrice>>
+  + calculatePerformance(symbol: String, from: LocalDate, to: LocalDate): Map<String, Double>
+  + comparePerformance(symbols: List<String>, from: LocalDate, to: LocalDate): Map<String, Map<String, Double>>
+}
+
+interface "UserServiceInterface" as userinterface {
+  + createUser(username: String, email: String, fullName: String): UserProfile
+  + getUserByUsername(username: String): Optional<UserProfile>
+  + updateUser(userId: Long, email: String, fullName: String, defaultDateRangeDays: Integer): UserProfile
+  + addFavoriteStock(userId: Long, stockSymbol: String): UserProfile
+  + getFavoriteStocks(userId: Long): Set<String>
+}
+
+interface "StockRepository" as stockrepo {
+  + findBySymbol(symbol: String): Optional<Stock>
+  + findAll(): List<Stock>
+}
+
+interface "StockPriceRepository" as pricerepo {
+  + findByStockAndDateBetweenOrderByDate(stock: Stock, startDate: LocalDate, endDate: LocalDate): List<StockPrice>
+  + existsByStockAndDate(stock: Stock, date: LocalDate): boolean
+}
+
+interface "UserProfileRepository" as userrepo {
+  + findByUsername(username: String): Optional<UserProfile>
+  + existsByUsername(username: String): boolean
+  + existsByEmail(email: String): boolean
+}
+
+' Components
+component "StockController" as stockcontroller {
+  + getStockSymbols(): ResponseEntity<List<Map<String, String>>>
+  + getStock(symbol: String): ResponseEntity<Stock>
+  + getStockPrices(symbol: String, startDate: LocalDate, endDate: LocalDate): ResponseEntity<List<StockPrice>>
+  + compareStocks(symbol1: String, symbol2: String, from: LocalDate, to: LocalDate): ResponseEntity<Map<String, List<StockPrice>>>
+}
+
+component "WebController" as webcontroller {
+  + index(): String
+  + compare(): String
+}
+
+component "UserController" as usercontroller {
+  + createUser(username: String, email: String, fullName: String): ResponseEntity<?>
+  + getUserById(id: Long): ResponseEntity<?>
+  + updateUser(id: Long, email: String, fullName: String, defaultDateRangeDays: Integer): ResponseEntity<?>
+  + addFavoriteStock(id: Long, symbol: String): ResponseEntity<?>
+  + getFavoriteStocks(id: Long): ResponseEntity<?>
+}
+
+component "StockService" as stockservice {
+  - stockRepository: StockRepository
+  - stockPriceRepository: StockPriceRepository
+  - externalStockDataService: ExternalStockDataServiceInterface
+}
+
+component "AlphaVantageService" as alphaservice {
+  - restTemplate: RestTemplate
+  - objectMapper: ObjectMapper
+  - apiKey: String
+  - baseUrl: String
+}
+
+component "ComparisonService" as comparisonservice {
+  - stockService: StockServiceInterface
+}
+
+component "UserService" as userservice {
+  - userProfileRepository: UserProfileRepository
+}
+
+' Models
+class "Stock" as stockmodel {
+  - id: Long
+  - symbol: String
+  - name: String
+  - exchange: String
+}
+
+class "StockPrice" as pricemodel {
+  - id: Long
+  - stock: Stock
+  - date: LocalDate
+  - open: double
+  - high: double
+  - low: double
+  - close: double
+  - volume: long
+}
+
+class "UserProfile" as usermodel {
+  - id: Long
+  - username: String
+  - email: String
+  - fullName: String
+  - favoriteStocks: Set<String>
+  - createdAt: LocalDateTime
+  - lastLogin: LocalDateTime
+  - defaultDateRangeDays: Integer
+}
+
+database "H2 Database" as db
+
+' External
+[AlphaVantage API] as alphaapi
+
+' Implement interfaces
+stockservice -up-|> stockserviceinterface
+alphaservice -up-|> externalstockdatainterface
+comparisonservice -up-|> comparisoninterface
+userservice -up-|> userinterface
+
+' Connect components
+stockcontroller --> stockserviceinterface: uses
+stockcontroller --> comparisoninterface: uses
+webcontroller --> stockserviceinterface: uses
+usercontroller --> userinterface: uses
+
+stockservice --> stockrepo: uses
+stockservice --> pricerepo: uses
+stockservice --> externalstockdatainterface: uses
+userservice --> userrepo: uses
+comparisonservice --> stockserviceinterface: uses
+
+stockrepo --> stockmodel: manages
+pricerepo --> pricemodel: manages
+userrepo --> usermodel: manages
+
+stockrepo --> db: persists to
+pricerepo --> db: persists to
+userrepo --> db: persists to
+
+alphaservice --> alphaapi: calls
+
+' Add legend
+legend right
+  <b>StockCompare Service-Oriented Architecture</b>
+  --
+  This detailed diagram shows the implementation of services
+  and their interactions in the StockCompare application.
+  The diagram follows SOA principles with clear interfaces
+  and separation of concerns.
+endlegend
+
+footer "StockCompare Application - Detailed SOA Design"
+
+@enduml 
