@@ -19,8 +19,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Implementation of ExternalStockDataServiceInterface for AlphaVantage API.
+ * This service retrieves stock data from the AlphaVantage API.
+ */
 @Service
-public class AlphaVantageService {
+public class AlphaVantageService implements ExternalStockDataServiceInterface {
 
     private static final Logger logger = Logger.getLogger(AlphaVantageService.class.getName());
 
@@ -38,6 +42,7 @@ public class AlphaVantageService {
         this.objectMapper = objectMapper;
     }
 
+    @Override
     public Stock getStock(String symbol) {
         try {
             // First, get stock company information
@@ -64,6 +69,7 @@ public class AlphaVantageService {
         return new Stock(symbol, symbol, "Unknown");
     }
 
+    @Override
     public List<StockPrice> getHistoricalPrices(Stock stock, LocalDate startDate, LocalDate endDate) {
         List<StockPrice> prices = new ArrayList<>();
         

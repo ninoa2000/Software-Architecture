@@ -1,0 +1,10 @@
+com/stockcompare/config/AppConfig.class
+com/stockcompare/StockCompareApplication.class
+com/stockcompare/repository/StockRepository.class
+com/stockcompare/model/Stock.class
+com/stockcompare/service/StockService.class
+com/stockcompare/service/AlphaVantageService.class
+com/stockcompare/model/StockPrice.class
+com/stockcompare/controller/StockController.class
+com/stockcompare/repository/StockPriceRepository.class
+com/stockcompare/controller/WebController.class

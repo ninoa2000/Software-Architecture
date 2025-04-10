@@ -4,7 +4,8 @@ import com.stockcompare.model.Stock;
 import com.stockcompare.model.StockPrice;
 import com.stockcompare.repository.StockPriceRepository;
 import com.stockcompare.repository.StockRepository;
-import com.stockcompare.service.StockService;
+import com.stockcompare.service.ComparisonServiceInterface;
+import com.stockcompare.service.StockServiceInterface;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,13 +25,17 @@ import java.util.stream.Collectors;
 public class StockController {
 
     private static final Logger logger = Logger.getLogger(StockController.class.getName());
-    private final StockService stockService;
+    private final StockServiceInterface stockService;
+    private final ComparisonServiceInterface comparisonService;
     private final StockRepository stockRepository;
     private final StockPriceRepository stockPriceRepository;
     
-    public StockController(StockService stockService, StockRepository stockRepository, 
+    public StockController(StockServiceInterface stockService, 
+                          ComparisonServiceInterface comparisonService,
+                          StockRepository stockRepository, 
                           StockPriceRepository stockPriceRepository) {
         this.stockService = stockService;
+        this.comparisonService = comparisonService;
         this.stockRepository = stockRepository;
         this.stockPriceRepository = stockPriceRepository;
     }
@@ -77,14 +82,37 @@ public class StockController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
         
         try {
-            List<StockPrice> prices1 = stockService.getStockPrices(symbol1, from, to);
-            List<StockPrice> prices2 = stockService.getStockPrices(symbol2, from, to);
-            
-            Map<String, List<StockPrice>> result = new HashMap<>();
-            result.put(symbol1, prices1);
-            result.put(symbol2, prices2);
-            
+            Map<String, List<StockPrice>> result = comparisonService.compareStocks(symbol1, symbol2, from, to);
             return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    
+    @GetMapping("/{symbol}/performance")
+    public ResponseEntity<Map<String, Double>> getPerformance(
+            @PathVariable String symbol,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        
+        try {
+            Map<String, Double> performanceMetrics = comparisonService.calculatePerformance(symbol, from, to);
+            return ResponseEntity.ok(performanceMetrics);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    
+    @GetMapping("/performance/compare")
+    public ResponseEntity<Map<String, Map<String, Double>>> comparePerformance(
+            @RequestParam List<String> symbols,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        
+        try {
+            Map<String, Map<String, Double>> performanceComparison = 
+                comparisonService.comparePerformance(symbols, from, to);
+            return ResponseEntity.ok(performanceComparison);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
