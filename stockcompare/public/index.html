@@ -3,27 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Comparison Tool</title>
+    <title>Stock Compare - Home</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             padding-top: 2rem;
         }
-        .hero-section {
+        .hero {
             background-color: #f8f9fa;
             padding: 4rem 0;
             border-radius: 8px;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
-        .feature-card {
-            padding: 1.5rem;
+        .feature-box {
+            background-color: #fff;
+            padding: 2rem;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             height: 100%;
             transition: transform 0.3s;
         }
-        .feature-card:hover {
+        .feature-box:hover {
             transform: translateY(-5px);
+        }
+        .icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #0d6efd;
         }
     </style>
 </head>
@@ -31,7 +37,7 @@
     <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/">Stock Compare</a>
+                <a class="navbar-brand" href="index.html">Stock Compare</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -48,35 +54,52 @@
             </div>
         </nav>
 
-        <div class="hero-section text-center">
-            <h1>Stock Comparison Tool</h1>
-            <p class="lead">Analyze and compare stock prices over time with our powerful tools</p>
-            <a href="compare.html" class="btn btn-primary btn-lg mt-3">Compare Stocks Now</a>
+        <div class="hero text-center">
+            <div class="container">
+                <h1 class="display-4">Compare Stock Performance</h1>
+                <p class="lead">Easy-to-use tool for visualizing and comparing stock prices over time</p>
+                <a href="compare.html" class="btn btn-primary btn-lg mt-3">Start Comparing</a>
+            </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <h3>Stock Comparison</h3>
-                    <p>Compare the performance of multiple stocks side by side to make informed investment decisions.</p>
+        <h2 class="text-center mb-4">Features</h2>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <div class="icon">📊</div>
+                    <h3>Actual Prices</h3>
+                    <p>View the actual dollar prices of stocks over your selected time period.</p>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <h3>Historical Data</h3>
-                    <p>Access historical stock price data, with detailed open, high, low, and close values.</p>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <div class="icon">📈</div>
+                    <h3>Normalized Comparison</h3>
+                    <p>Compare relative performance of stocks with different price ranges.</p>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <h3>Easy to Use</h3>
-                    <p>Simple interface allows you to quickly select stocks and visualize their performance in just a few clicks.</p>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <div class="icon">📆</div>
+                    <h3>Custom Date Ranges</h3>
+                    <p>Select specific date periods for more targeted analysis.</p>
                 </div>
             </div>
+        </div>
+        
+        <hr class="my-5">
+        
+        <div class="text-center mb-5">
+            <h2>Ready to analyze stock performance?</h2>
+            <p class="lead">Start by selecting and comparing two stocks now.</p>
+            <a href="compare.html" class="btn btn-primary btn-lg mt-3">Compare Stocks</a>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+</html>
+    
 </html>
     

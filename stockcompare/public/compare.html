@@ -3,339 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Comparison Tool</title>
+    <title>Compare Stocks - Stock Price Comparison</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             padding-top: 2rem;
-            font-family: Arial, sans-serif;
         }
-        .chart-container {
-            margin-top: 30px;
-            height: 600px; /* Increased height for larger chart */
-            width: 100%;
-        }
-        .header {
+        .form-container {
             background-color: #f8f9fa;
-            padding: 2rem 0;
-            margin-bottom: 2rem;
+            padding: 2rem;
             border-radius: 8px;
-        }
-        .date-range {
-            margin-top: 20px;
-            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header text-center">
-            <h1>Stock Comparison Tool</h1>
-            <p class="lead">Compare the performance of different stocks over time</p>
-        </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="index.html">Stock Compare</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="compare.html">Compare Stocks</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
 
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Stock 1</div>
-                    <div class="card-body">
-                        <select id="stock1" class="form-select mb-3">
-                            <option value="AAPL">Apple Inc. (AAPL)</option>
-                            <option value="MSFT">Microsoft Corporation (MSFT)</option>
-                            <option value="GOOGL">Alphabet Inc. (GOOGL)</option>
-                        </select>
+        <h1 class="mb-4">Compare Stock Prices</h1>
+        
+        <div class="alert alert-info mb-4">
+            <p><strong>How to use:</strong> Enter two stock symbols and select a date range to compare their performance.</p>
+            <p>Example symbols: AAPL (Apple), MSFT (Microsoft), GOOGL (Alphabet), AMZN (Amazon)</p>
+        </div>
+        
+        <div id="errorAlert" class="alert alert-danger mb-4" style="display: none;"></div>
+        
+        <div class="form-container">
+            <form id="compareForm" onsubmit="event.preventDefault(); compareStocks();">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="symbol1" class="form-label">Stock Symbol 1</label>
+                        <input type="text" class="form-control" id="symbol1" name="symbol1" required placeholder="e.g. AAPL">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="symbol2" class="form-label">Stock Symbol 2</label>
+                        <input type="text" class="form-control" id="symbol2" name="symbol2" required placeholder="e.g. MSFT">
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Stock 2</div>
-                    <div class="card-body">
-                        <select id="stock2" class="form-select mb-3">
-                            <option value="MSFT">Microsoft Corporation (MSFT)</option>
-                            <option value="AAPL">Apple Inc. (AAPL)</option>
-                            <option value="GOOGL">Alphabet Inc. (GOOGL)</option>
-                        </select>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" name="startDate" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="endDate" name="endDate" required>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="row date-range">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Start Date</div>
-                    <div class="card-body">
-                        <input type="date" id="startDate" class="form-control" value="2025-03-10">
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">End Date</div>
-                    <div class="card-body">
-                        <input type="date" id="endDate" class="form-control" value="2025-04-09">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-12">
-                <button id="compareBtn" class="btn btn-primary w-100">Compare Stocks</button>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-12">
-                <div class="chart-container">
-                    <canvas id="stockChart"></canvas>
-                </div>
-            </div>
+                
+                <button type="submit" class="btn btn-primary">Compare Stocks</button>
+            </form>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
     <script>
-        // Sample stock data (generated with realistic patterns)
-        const sampleData = {
-            'AAPL': [
-                { date: '2025-03-10', close: 171.80 },
-                { date: '2025-03-11', close: 173.90 },
-                { date: '2025-03-12', close: 174.20 },
-                { date: '2025-03-13', close: 176.10 },
-                { date: '2025-03-14', close: 177.30 },
-                { date: '2025-03-17', close: 178.50 },
-                { date: '2025-03-18', close: 179.20 },
-                { date: '2025-03-19', close: 180.10 },
-                { date: '2025-03-20', close: 181.30 },
-                { date: '2025-03-21', close: 182.60 },
-                { date: '2025-03-24', close: 183.90 },
-                { date: '2025-03-25', close: 184.80 },
-                { date: '2025-03-26', close: 185.70 },
-                { date: '2025-03-27', close: 186.50 },
-                { date: '2025-03-28', close: 187.80 },
-                { date: '2025-03-31', close: 189.10 },
-                { date: '2025-04-01', close: 190.40 },
-                { date: '2025-04-02', close: 191.70 },
-                { date: '2025-04-03', close: 192.90 },
-                { date: '2025-04-04', close: 194.20 },
-                { date: '2025-04-07', close: 195.50 },
-                { date: '2025-04-08', close: 196.80 },
-                { date: '2025-04-09', close: 198.10 }
-            ],
-            'MSFT': [
-                { date: '2025-03-10', close: 331.50 },
-                { date: '2025-03-11', close: 334.70 },
-                { date: '2025-03-12', close: 337.90 },
-                { date: '2025-03-13', close: 341.10 },
-                { date: '2025-03-14', close: 344.30 },
-                { date: '2025-03-17', close: 347.50 },
-                { date: '2025-03-18', close: 350.70 },
-                { date: '2025-03-19', close: 354.00 },
-                { date: '2025-03-20', close: 357.20 },
-                { date: '2025-03-21', close: 360.40 },
-                { date: '2025-03-24', close: 363.60 },
-                { date: '2025-03-25', close: 366.80 },
-                { date: '2025-03-26', close: 370.10 },
-                { date: '2025-03-27', close: 373.30 },
-                { date: '2025-03-28', close: 376.60 },
-                { date: '2025-03-31', close: 379.90 },
-                { date: '2025-04-01', close: 383.20 },
-                { date: '2025-04-02', close: 386.50 },
-                { date: '2025-04-03', close: 389.80 },
-                { date: '2025-04-04', close: 393.10 },
-                { date: '2025-04-07', close: 396.40 },
-                { date: '2025-04-08', close: 399.70 },
-                { date: '2025-04-09', close: 403.00 }
-            ],
-            'GOOGL': [
-                { date: '2025-03-10', close: 141.40 },
-                { date: '2025-03-11', close: 142.80 },
-                { date: '2025-03-12', close: 143.60 },
-                { date: '2025-03-13', close: 144.40 },
-                { date: '2025-03-14', close: 145.20 },
-                { date: '2025-03-17', close: 146.00 },
-                { date: '2025-03-18', close: 146.80 },
-                { date: '2025-03-19', close: 147.60 },
-                { date: '2025-03-20', close: 148.40 },
-                { date: '2025-03-21', close: 149.20 },
-                { date: '2025-03-24', close: 150.10 },
-                { date: '2025-03-25', close: 151.00 },
-                { date: '2025-03-26', close: 151.90 },
-                { date: '2025-03-27', close: 152.80 },
-                { date: '2025-03-28', close: 153.70 },
-                { date: '2025-03-31', close: 154.60 },
-                { date: '2025-04-01', close: 155.50 },
-                { date: '2025-04-02', close: 156.40 },
-                { date: '2025-04-03', close: 157.30 },
-                { date: '2025-04-04', close: 158.20 },
-                { date: '2025-04-07', close: 159.10 },
-                { date: '2025-04-08', close: 160.00 },
-                { date: '2025-04-09', close: 160.90 }
-            ]
-        };
-
-        // Chart instance
-        let stockChart;
-
-        // Function to filter data by date range
-        function filterDataByDateRange(data, startDate, endDate) {
-            return data.filter(item => {
-                const itemDate = new Date(item.date);
-                return itemDate >= startDate && itemDate <= endDate;
-            });
-        }
-
-        // Function to create or update the chart
-        function updateChart(stock1, stock2, startDate, endDate) {
-            const ctx = document.getElementById('stockChart').getContext('2d');
-            
-            // Get data for selected stocks
-            let stock1Data = sampleData[stock1];
-            let stock2Data = sampleData[stock2];
-            
-            // Filter data by date range
-            const startDateObj = new Date(startDate);
-            const endDateObj = new Date(endDate);
-            
-            stock1Data = filterDataByDateRange(stock1Data, startDateObj, endDateObj);
-            stock2Data = filterDataByDateRange(stock2Data, startDateObj, endDateObj);
-            
-            if (stock1Data.length === 0 || stock2Data.length === 0) {
-                alert("No data available for the selected date range. Please choose different dates.");
-                return;
-            }
-            
-            // Prepare datasets
-            const dates = stock1Data.map(item => item.date);
-            const stock1Prices = stock1Data.map(item => item.close);
-            const stock2Prices = stock2Data.map(item => item.close);
-            
-            // Calculate percentage change from first day for better comparison
-            const stock1BasePrice = stock1Prices[0];
-            const stock2BasePrice = stock2Prices[0];
-            
-            const stock1PercentChange = stock1Prices.map(price => 
-                ((price - stock1BasePrice) / stock1BasePrice * 100).toFixed(2)
-            );
-            
-            const stock2PercentChange = stock2Prices.map(price => 
-                ((price - stock2BasePrice) / stock2BasePrice * 100).toFixed(2)
-            );
-            
-            // Destroy previous chart if it exists
-            if (stockChart) {
-                stockChart.destroy();
-            }
-            
-            // Create new chart
-            stockChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: dates,
-                    datasets: [
-                        {
-                            label: stock1,
-                            data: stock1PercentChange,
-                            borderColor: 'rgb(75, 192, 192)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.1)',
-                            borderWidth: 3,
-                            tension: 0.1
-                        },
-                        {
-                            label: stock2,
-                            data: stock2PercentChange,
-                            borderColor: 'rgb(255, 99, 132)',
-                            backgroundColor: 'rgba(255, 99, 132, 0.1)',
-                            borderWidth: 3,
-                            tension: 0.1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: `Percentage Change: ${stock1} vs ${stock2} (${startDate} to ${endDate})`,
-                            font: {
-                                size: 16
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.dataset.label}: ${context.parsed.y}%`;
-                                }
-                            }
-                        },
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 14
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Percentage Change (%)',
-                                font: {
-                                    size: 14
-                                }
-                            },
-                            ticks: {
-                                font: {
-                                    size: 12
-                                }
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date',
-                                font: {
-                                    size: 14
-                                }
-                            },
-                            ticks: {
-                                font: {
-                                    size: 12
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Add event listener for the compare button
-        document.getElementById('compareBtn').addEventListener('click', function() {
-            const stock1 = document.getElementById('stock1').value;
-            const stock2 = document.getElementById('stock2').value;
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            
-            if (new Date(startDate) > new Date(endDate)) {
-                alert("Start date cannot be after end date. Please choose valid dates.");
-                return;
-            }
-            
-            updateChart(stock1, stock2, startDate, endDate);
-        });
-
-        // Initialize chart with default selections
+        // Set default dates
         document.addEventListener('DOMContentLoaded', function() {
-            const stock1 = document.getElementById('stock1').value;
-            const stock2 = document.getElementById('stock2').value;
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            updateChart(stock1, stock2, startDate, endDate);
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            
+            // Default to 3 months ago
+            const startDate = new Date();
+            startDate.setMonth(startDate.getMonth() - 3);
+            startDateInput.value = startDate.toISOString().split('T')[0];
+            
+            // Default to today
+            const endDate = new Date();
+            endDateInput.value = endDate.toISOString().split('T')[0];
         });
     </script>
 </body>
